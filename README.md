@@ -1,2 +1,14 @@
-# burp-reset-a-tron
-reset-a-tron Burp extension
+# Reset-a-tron Burp Extension
+Most web applications provide a 'forgot my password' feature where a recovery or reset token is delivered to the associated account email address. Usually these emails contain a link with a token that once clicked, result in the user being able to proceed with the recovery process. It is important to test the randomness of these reset tokens to ensure that other users cannot forge their own and take over accounts they do not control. Burp provides a means to import collected tokens and subject them to various randomness tests through it's Sequencer; however manually collecting reset tokens through recovery emails can be very time consuming.
+This process can be automated by using the Burp Collaborator to receive incoming reset emails and using an extension to poll the collaborator and parse those emails for the reset token which are then saved to a file. The file can then be imported into the Burp sequencer (or other tool) for analysis.
+## Step-by-step guide
+Use the following guide to install the extension and test your collaborator setup:
+1. Ensure you have configured Burp for Jython.
+2. Download and install the Reset-a-tron extension.
+3. Once installed, you should see the Reset-a-tron tab which provides a basic user interface for configuration and output. Inside the Token Type panel, you can specify a link parameter name if the token is sent as a URL. You can also specify a regular expression for other types of tokens such as ones sent in a REST URL or even numeric codes.
+4. Configure the project settings to use the Burp Collaborator of your choice. The extension will also use the same one.
+5. Specify the polling time for how frequently the extension will check the Collaborator for new messages as well as the path and filename for where the collected tokens will be sent to.
+6. Click Start to begin polling. The extension will provide an email address that can be used for your testing as well as a test command that can be used with sendemail.
+7. Update the web application account to use the provided email so that reset emails are delivered to the collaborator. The name component of the email can be any value however the domain component must match the value initially provided by the extension. You can either scroll to the top of the output window or use the 'Copy Email' button in the control panel to copy the generated domain to the clipboard. Due to how the Burp Collaborator works, it is currently [not possible](https://support.portswigger.net/customer/portal/questions/16812082-save-collaborator-iburpcollaboratorclientcontext) to re-use the same domain after restarting Burp sessions.
+8. Repeatedly use the password recovery feature of the application. As emails are delivered to the Collaborator, the extension will provide output along with the value of the recovered token and confirmation that the value has been saved.
+9. When a sufficiently large enough sample has been generated (consider using an intruder attack to automate this), import the token file to Sequencer or any other tool of your choice.
